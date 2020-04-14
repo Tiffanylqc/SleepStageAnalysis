@@ -200,42 +200,45 @@ def sleep_analysis():
     pred_label = predict(hparams, FLAGS, data_score)
     # print(pred_label)
     pred_stage_name = map(lambda i: class_dict[i], pred_label)
+    return make_response(
+        jsonify(message="Sample file 'file' succeeds in POST request"), 200
+    )
     # overall score, overall msg, total sleep time,
     # weighted transition rateweighted transition rate msg, transition info for each epoch
-    (
-        score,
-        overall_msg,
-        tst,
-        wtr,
-        wtr_msg,
-        epoch_msg,
-    ) = eeg_frag_info_combine.eeg_frag_info(pred_label, EPOCH_SEC_SIZE)
+    # (
+    #     score,
+    #     overall_msg,
+    #     tst,
+    #     wtr,
+    #     wtr_msg,
+    #     epoch_msg,
+    # ) = eeg_frag_info_combine.eeg_frag_info(pred_label, EPOCH_SEC_SIZE)
 
-    section_info = {}
-    for i in range(1):
-        # for i in range(len(pred_label)):
-        section_name = "section_" + str(i + 1)
-        y = np.squeeze(x[i]).tolist()
-        section_info[section_name] = {
-            "name": pred_stage_name[i],
-            "description": epoch_msg[i],
-            "signal": {
-                "x": range(0, 30),
-                "y": y,
-            },  # x is the time, unit in miliseconds
-        }
-    return make_response(
-        jsonify(
-            message="Sample file upload succeeds in POST request",
-            sleep_score=score,
-            wtr=wtr,
-            wtr_msg=wtr_msg,
-            sleep_msg=overall_msg,
-            total_sleep_time=tst,
-            section_info=section_info,
-        ),
-        200,
-    )
+    # section_info = {}
+    # for i in range(1):
+    #     # for i in range(len(pred_label)):
+    #     section_name = "section_" + str(i + 1)
+    #     y = np.squeeze(x[i]).tolist()
+    #     section_info[section_name] = {
+    #         "name": pred_stage_name[i],
+    #         "description": epoch_msg[i],
+    #         "signal": {
+    #             "x": range(0, 30),
+    #             "y": y,
+    #         },  # x is the time, unit in miliseconds
+    #     }
+    # return make_response(
+    #     jsonify(
+    #         message="Sample file upload succeeds in POST request",
+    #         sleep_score=score,
+    #         wtr=wtr,
+    #         wtr_msg=wtr_msg,
+    #         sleep_msg=overall_msg,
+    #         total_sleep_time=tst,
+    #         section_info=section_info,
+    #     ),
+    #     200,
+    # )
 
 
 if __name__ == "__main__":
