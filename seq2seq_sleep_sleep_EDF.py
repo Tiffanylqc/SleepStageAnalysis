@@ -1,12 +1,10 @@
 import numpy as np
-import matplotlib.pyplot as plt
 import scipy.io as spio
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import confusion_matrix, f1_score
 import random
 import time
 import os
-from datetime import datetime
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import cohen_kappa_score
 import tensorflow as tf
@@ -163,45 +161,6 @@ def build_firstPart_model(input_var, keep_prob_=0.5):
     network = tf.nn.dropout(network, keep_prob_)
 
     return network
-
-
-def plot_attention(attention_map, input_tags=None, output_tags=None):
-    attn_len = len(attention_map)
-
-    # Plot the attention_map
-    plt.clf()
-    f = plt.figure(figsize=(15, 10))
-    ax = f.add_subplot(1, 1, 1)
-
-    # Add image
-    i = ax.imshow(attention_map, interpolation="nearest", cmap="gray")
-
-    # Add colorbar
-    cbaxes = f.add_axes([0.2, 0, 0.6, 0.03])
-    cbar = f.colorbar(i, cax=cbaxes, orientation="horizontal")
-    cbar.ax.set_xlabel('Alpha value (Probability output of the "softmax")', labelpad=2)
-
-    # Add labels
-    ax.set_yticks(range(attn_len))
-    if output_tags != None:
-        ax.set_yticklabels(output_tags[:attn_len])
-
-    ax.set_xticks(range(attn_len))
-    if input_tags != None:
-        ax.set_xticklabels(input_tags[:attn_len], rotation=45)
-
-    ax.set_xlabel("Input Sequence")
-    ax.set_ylabel("Output Sequence")
-
-    # add grid and legend
-    ax.grid()
-    HERE = os.path.realpath(os.path.join(os.path.realpath(__file__), ".."))
-    dir_save = os.path.join(HERE, "attention_maps")
-    if os.path.exists(dir_save) == False:
-        os.mkdir(dir_save)
-    f.savefig(os.path.join(dir_save, "a_map_1.pdf"), bbox_inches="tight")
-    # f.show()
-    plt.show()
 
 
 def build_network(
@@ -380,7 +339,6 @@ def build_network(
             encoder_state = decoder_cells.zero_state(
                 hparams.batch_size, tf.float32
             ).clone(cell_state=encoder_state)
-
 
         # Basic Decoder and decode
         decoder = tf.contrib.seq2seq.BasicDecoder(
@@ -576,7 +534,6 @@ def run_program(hparams, FLAGS):
     traindata_dir = os.path.join(
         os.path.abspath(os.path.join(data_dir, os.pardir)), "traindata/"
     )
-    print(str(datetime.now()))
 
     def evaluate_model(hparams, X_test, y_test, classes):
         acc_track = []
@@ -813,7 +770,6 @@ def run_program(hparams, FLAGS):
             sess.run(tf.global_variables_initializer())
             sess.run(tf.local_variables_initializer())
             saver = tf.train.Saver()
-            print(str(datetime.now()))
             # ckpt = tf.train.get_checkpoint_state(FLAGS.checkpoint_dir)
             ckpt_name = "model_fold{:02d}.ckpt".format(fold_idx)
             ckpt_exist = False
@@ -871,13 +827,6 @@ def run_program(hparams, FLAGS):
                         )
                         y_true_ = target_batch[:, 1:-1]
 
-                        # input_tags - word representation of input sequence, use None to skip
-                        # output_tags - word representation of output sequence, use None to skip
-                        # i - index of input element in batch
-                        # input_tags = [[num2charY[i] for i in seq] for seq in y_true_]
-                        # output_tags = [[num2charY[i] for i in seq] for seq in y_pred_]
-                        # plot_attention(alignments_alphas[1, :, :], input_tags[1], output_tags[1])
-
                         y_true.extend(y_true_)
                         y_pred.extend(y_pred_)
                     # accuracy = np.mean(train_acc)
@@ -893,16 +842,16 @@ def run_program(hparams, FLAGS):
                     mf1 = f1_score(y_true, y_pred, average="macro")
                     ck_score = cohen_kappa_score(y_true, y_pred)
 
-                    print(
-                        "Epoch {:3} Loss: {:>6.3f} Accuracy: {:>6.4f} F1-score: {:>6.4f} Cohen's Kappa: {:>6.4f} Epoch duration: {:>6.3f}s".format(
-                            epoch_i,
-                            np.mean(batch_loss),
-                            accuracy,
-                            mf1,
-                            ck_score,
-                            time.time() - start_time,
-                        )
-                    )
+                    # print(
+                    #     "Epoch {:3} Loss: {:>6.3f} Accuracy: {:>6.4f} F1-score: {:>6.4f} Cohen's Kappa: {:>6.4f} Epoch duration: {:>6.3f}s".format(
+                    #         epoch_i,
+                    #         np.mean(batch_loss),
+                    #         accuracy,
+                    #         mf1,
+                    #         ck_score,
+                    #         time.time() - start_time,
+                    #     )
+                    # )
                     if (epoch_i + 1) % hparams.test_step == 0:
                         (
                             acc_avg,
@@ -951,12 +900,11 @@ def run_program(hparams, FLAGS):
                                 % save_path
                             )
 
-
                 # plt.plot(loss_track)
                 # plt.show()
                 # print 'Classes: ', classes
 
-            print(str(datetime.now()))
+            # print(str(datetime.now()))
             print(
                 "Fold{} took: {:>6.3f}s".format(
                     fold_idx, time.time() - start_time_fold_i
@@ -1015,4 +963,3 @@ def main(args=None):
 
 if __name__ == "__main__":
     tf.app.run()
-
