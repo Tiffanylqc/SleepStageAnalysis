@@ -193,7 +193,7 @@ def sleep_analysis():
     # predict stage with seq2seq model
     data_score = preprocess_seq2seq(x)
     pred_label = predict(hparams, data_score)
-    print(pred_label)
+    # print(pred_label)
     pred_stage_name = map(lambda i: class_dict[i], pred_label)
     # overall score, overall msg, total sleep time,
     # weighted transition rateweighted transition rate msg, transition info for each epoch
