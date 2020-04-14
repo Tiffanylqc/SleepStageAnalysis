@@ -10,13 +10,9 @@ from mne.io import concatenate_raws, read_raw_edf
 from seq2seq_sleep_sleep_EDF import build_whole_model
 import eeg_frag_info_combine
 import numpy as np
-import matplotlib.pyplot as plt
 import scipy.io as spio
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import confusion_matrix, f1_score
-import random
-import time
-from datetime import datetime
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import cohen_kappa_score
 import tensorflow as tf
@@ -158,6 +154,11 @@ def predict(hparams, FLAGS, X_test):
         saver.restore(sess, ckpt_name)
         y_pred = get_y_pred(hparams, X_test, classes, sess, pred_outputs)
     return y_pred
+
+
+@app.route("/")
+def index():
+    return "<h1>Success</h1>"
 
 
 @app.route("/api/analysis", methods=["POST"])
