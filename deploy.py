@@ -193,11 +193,8 @@ def sleep_analysis():
     # predict stage with seq2seq model
     data_score = preprocess_seq2seq(x)
     pred_label = predict(hparams, data_score)
-    # print(pred_label)
+    print(pred_label)
     pred_stage_name = map(lambda i: class_dict[i], pred_label)
-    # return make_response(
-    #     jsonify(message="Sample file 'file' succeeds in POST request"), 200
-    # )
     # overall score, overall msg, total sleep time,
     # weighted transition rateweighted transition rate msg, transition info for each epoch
     (
@@ -208,20 +205,24 @@ def sleep_analysis():
         wtr_msg,
         epoch_msg,
     ) = eeg_frag_info_combine.eeg_frag_info(pred_label, EPOCH_SEC_SIZE)
+    global global_section_msg
+    global global_signal_val
+    global global_pred_stage_name
+
+    global_signal_val = x
+    global_section_msg = epoch_msg
+    global_pred_stage_name = pred_stage_name
 
     section_info = {}
-    # for i in range(1):
-    for i in range(len(pred_label)):
-        section_name = "section_" + str(i + 1)
-        y = np.squeeze(x[i]).tolist()
-        section_info[section_name] = {
-            "name": pred_stage_name[i],
-            "description": epoch_msg[i],
-            "signal": {
-                "x": range(0, 30),
-                "y": y,
-            },  # x is the time, unit in miliseconds
-        }
+    i = 0
+    section_name = "section_" + str(i)
+    y = np.squeeze(global_signal_val[i]).tolist()
+    section_info = {
+        "section_id": i,
+        "stage_name": global_pred_stage_name[i],
+        "description": global_section_msg[i],
+        "signal": {"x": range(0, 3000), "y": y,},  # x is the time, unit in seconds
+    }
     return make_response(
         jsonify(
             message="Sample file upload succeeds in POST request",
@@ -230,10 +231,26 @@ def sleep_analysis():
             wtr_msg=wtr_msg,
             sleep_msg=overall_msg,
             total_sleep_time=tst,
-            section_info=section_info,
+            first_section_info=section_info,
+            total_section_num=len(global_pred_stage_name),
         ),
         200,
     )
+
+
+@app.route("/api/section")
+def get_section_info():
+    i = int(request.args.get("sec_id"))
+    section_info = {}
+    section_name = "section_" + str(i)
+    y = np.squeeze(global_signal_val[i]).tolist()
+    section_info = {
+        "section_id": i,
+        "stage_name": global_pred_stage_name[i],
+        "description": global_section_msg[i],
+        "signal": {"x": range(0, 3000), "y": y,},  # x is the time, unit in seconds
+    }
+    return make_response(jsonify(section=section_info), 200)
 
 
 if __name__ == "__main__":
