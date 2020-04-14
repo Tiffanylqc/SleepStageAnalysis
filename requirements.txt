@@ -52,4 +52,5 @@ sure==1.4.11
 tensorboard==1.13.1
 tensorflow==1.13.1
 tensorflow-estimator==1.13.0
+Werkzeug==1.0.0
 
