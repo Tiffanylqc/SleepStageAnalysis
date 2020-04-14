@@ -56,11 +56,6 @@ EPOCH_SEC_SIZE = 30
 DATA_DIR = "./eeg_data/"
 SELECT_CH = "EEG Fpz-Cz"
 
-FLAGS = tf.app.flags.FLAGS
-tf.app.flags.DEFINE_list("classes", ["W", "N1", "N2", "N3", "REM"], """classes""")
-tf.app.flags.DEFINE_string(
-    "checkpoint_dir", "seq2seq-model", """Directory to save checkpoints""",
-)
 # hyperparameters
 hparams = tf.contrib.training.HParams(
     epochs=120,  # 300
@@ -107,7 +102,7 @@ def batch_data(x, batch_size):
         start += batch_size
 
 
-def predict(hparams, FLAGS, X_test):
+def predict(hparams, X_test):
     def get_y_pred(hparams, X_test, classes, sess, pred_outputs):
         n_classes = len(classes)
         y_pred = []
@@ -122,7 +117,7 @@ def predict(hparams, FLAGS, X_test):
             y_pred.extend(_y_pred)
         return y_pred
 
-    classes = FLAGS.classes
+    classes = ["W", "N1", "N2", "N3", "REM"]
     n_classes = len(classes)
     char2numY = dict(zip(classes, range(len(classes))))
     # <SOD> is a token to show start of decoding  and <EOD> is a token to indicate end of decoding
@@ -150,7 +145,7 @@ def predict(hparams, FLAGS, X_test):
         saver = tf.train.Saver()
         # restore the trained model
         ckpt_name = "seq2seqmodel.ckpt"
-        ckpt_name = os.path.join(FLAGS.checkpoint_dir, ckpt_name)
+        ckpt_name = os.path.join("./seq2seq-model/", ckpt_name)
         saver.restore(sess, ckpt_name)
         y_pred = get_y_pred(hparams, X_test, classes, sess, pred_outputs)
     return y_pred
@@ -197,48 +192,48 @@ def sleep_analysis():
 
     # predict stage with seq2seq model
     data_score = preprocess_seq2seq(x)
-    pred_label = predict(hparams, FLAGS, data_score)
+    pred_label = predict(hparams, data_score)
     # print(pred_label)
     pred_stage_name = map(lambda i: class_dict[i], pred_label)
-    return make_response(
-        jsonify(message="Sample file 'file' succeeds in POST request"), 200
-    )
+    # return make_response(
+    #     jsonify(message="Sample file 'file' succeeds in POST request"), 200
+    # )
     # overall score, overall msg, total sleep time,
     # weighted transition rateweighted transition rate msg, transition info for each epoch
-    # (
-    #     score,
-    #     overall_msg,
-    #     tst,
-    #     wtr,
-    #     wtr_msg,
-    #     epoch_msg,
-    # ) = eeg_frag_info_combine.eeg_frag_info(pred_label, EPOCH_SEC_SIZE)
+    (
+        score,
+        overall_msg,
+        tst,
+        wtr,
+        wtr_msg,
+        epoch_msg,
+    ) = eeg_frag_info_combine.eeg_frag_info(pred_label, EPOCH_SEC_SIZE)
 
-    # section_info = {}
+    section_info = {}
     # for i in range(1):
-    #     # for i in range(len(pred_label)):
-    #     section_name = "section_" + str(i + 1)
-    #     y = np.squeeze(x[i]).tolist()
-    #     section_info[section_name] = {
-    #         "name": pred_stage_name[i],
-    #         "description": epoch_msg[i],
-    #         "signal": {
-    #             "x": range(0, 30),
-    #             "y": y,
-    #         },  # x is the time, unit in miliseconds
-    #     }
-    # return make_response(
-    #     jsonify(
-    #         message="Sample file upload succeeds in POST request",
-    #         sleep_score=score,
-    #         wtr=wtr,
-    #         wtr_msg=wtr_msg,
-    #         sleep_msg=overall_msg,
-    #         total_sleep_time=tst,
-    #         section_info=section_info,
-    #     ),
-    #     200,
-    # )
+    for i in range(len(pred_label)):
+        section_name = "section_" + str(i + 1)
+        y = np.squeeze(x[i]).tolist()
+        section_info[section_name] = {
+            "name": pred_stage_name[i],
+            "description": epoch_msg[i],
+            "signal": {
+                "x": range(0, 30),
+                "y": y,
+            },  # x is the time, unit in miliseconds
+        }
+    return make_response(
+        jsonify(
+            message="Sample file upload succeeds in POST request",
+            sleep_score=score,
+            wtr=wtr,
+            wtr_msg=wtr_msg,
+            sleep_msg=overall_msg,
+            total_sleep_time=tst,
+            section_info=section_info,
+        ),
+        200,
+    )
 
 
 if __name__ == "__main__":
