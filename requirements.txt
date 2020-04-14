@@ -54,3 +54,4 @@ tensorflow==1.13.1
 tensorflow-estimator==1.13.0
 Werkzeug==1.0.0
 gunicorn==19.10.0
+gevent==1.4.0
