@@ -211,7 +211,8 @@ def sleep_analysis():
     ) = eeg_frag_info_combine.eeg_frag_info(pred_label, EPOCH_SEC_SIZE)
 
     section_info = {}
-    for i in range(len(pred_label)):
+    for i in range(1):
+        # for i in range(len(pred_label)):
         section_name = "section_" + str(i + 1)
         y = np.squeeze(x[i]).tolist()
         section_info[section_name] = {
