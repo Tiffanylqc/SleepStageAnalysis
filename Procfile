@@ -1,1 +1,1 @@
-web: gunicorn deploy:app --timeout 1000
+web: gunicorn deploy:app --timeout 2000
