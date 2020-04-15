@@ -211,10 +211,7 @@ def predict(hparams, FLAGS, filename):
             y_pred,
             alignments_alphas_all,
         ) = evaluate_model(hparams, X_test, y_test, classes)
-        print "Scoring signal input length is: {}\n".format(X_test.shape)
-        print "True signal output length is {}\n".format(len(y_true))
         print "True signal output is ", y_true
-        print "Predicted signal output length is {}\n".format(len(y_pred))
         print "Predicted signal output is", y_pred
     return y_pred
 
