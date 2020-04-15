@@ -2,7 +2,6 @@
 adapted from https://github.com/MousaviSajad/SleepEEGNet
 """
 import numpy as np
-import scipy.io as spio
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import confusion_matrix, f1_score
 import random
@@ -18,7 +17,6 @@ from sklearn.model_selection import train_test_split
 from tensorflow.python.layers.core import Dense
 from tensorflow.contrib.seq2seq.python.ops import beam_search_decoder
 from dataloader import SeqDataLoader
-import argparse
 
 
 def batch_data(x, y, batch_size):
@@ -537,6 +535,7 @@ def run_program(hparams, FLAGS):
     traindata_dir = os.path.join(
         os.path.abspath(os.path.join(data_dir, os.pardir)), "traindata/"
     )
+    # print(str(datetime.now()))
 
     def evaluate_model(hparams, X_test, y_test, classes):
         acc_track = []
@@ -773,6 +772,7 @@ def run_program(hparams, FLAGS):
             sess.run(tf.global_variables_initializer())
             sess.run(tf.local_variables_initializer())
             saver = tf.train.Saver()
+            # print(str(datetime.now()))
             # ckpt = tf.train.get_checkpoint_state(FLAGS.checkpoint_dir)
             ckpt_name = "model_fold{:02d}.ckpt".format(fold_idx)
             ckpt_exist = False
@@ -830,6 +830,12 @@ def run_program(hparams, FLAGS):
                         )
                         y_true_ = target_batch[:, 1:-1]
 
+                        # input_tags - word representation of input sequence, use None to skip
+                        # output_tags - word representation of output sequence, use None to skip
+                        # i - index of input element in batch
+                        # input_tags = [[num2charY[i] for i in seq] for seq in y_true_]
+                        # output_tags = [[num2charY[i] for i in seq] for seq in y_pred_]
+
                         y_true.extend(y_true_)
                         y_pred.extend(y_pred_)
                     # accuracy = np.mean(train_acc)
@@ -845,16 +851,16 @@ def run_program(hparams, FLAGS):
                     mf1 = f1_score(y_true, y_pred, average="macro")
                     ck_score = cohen_kappa_score(y_true, y_pred)
 
-                    # print(
-                    #     "Epoch {:3} Loss: {:>6.3f} Accuracy: {:>6.4f} F1-score: {:>6.4f} Cohen's Kappa: {:>6.4f} Epoch duration: {:>6.3f}s".format(
-                    #         epoch_i,
-                    #         np.mean(batch_loss),
-                    #         accuracy,
-                    #         mf1,
-                    #         ck_score,
-                    #         time.time() - start_time,
-                    #     )
-                    # )
+                    print(
+                        "Epoch {:3} Loss: {:>6.3f} Accuracy: {:>6.4f} F1-score: {:>6.4f} Cohen's Kappa: {:>6.4f} Epoch duration: {:>6.3f}s".format(
+                            epoch_i,
+                            np.mean(batch_loss),
+                            accuracy,
+                            mf1,
+                            ck_score,
+                            time.time() - start_time,
+                        )
+                    )
                     if (epoch_i + 1) % hparams.test_step == 0:
                         (
                             acc_avg,
@@ -939,6 +945,7 @@ def main(args=None):
         "checkpoints-seq2seq-sleep-EDF",
         """Directory to save checkpoints""",
     )
+    # tf.app.flags.DEFINE_string('ckpt_name', 'seq2seq_sleep.ckpt',"""Check point name""")
 
     # hyperparameters
     hparams = tf.contrib.training.HParams(

@@ -174,7 +174,9 @@ def main():
             # Trim the tail
             if np.all(extra_idx > select_idx[-1]):
                 # n_trims = len(select_idx) % int(EPOCH_SEC_SIZE * sampling_rate)
-                # n_label_trims = int(math.ceil(n_trims / (EPOCH_SEC_SIZE * sampling_rate)))
+                # n_label_trims = int(
+                #     math.ceil(n_trims / (EPOCH_SEC_SIZE * sampling_rate))
+                # )
                 n_label_trims = int(
                     math.ceil(len(extra_idx) / (EPOCH_SEC_SIZE * sampling_rate))
                 )
