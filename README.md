@@ -1,5 +1,6 @@
 # Automated Sleep Stage Classification
 A sequence to sequence learning model for sleep stage and fragmentation analysis with ready to use server API. 
+
 [Github repo](https://github.com/Tiffanylqc/SleepStageAnalysis) 
 ## Requirements
 * Python 2.7
@@ -28,7 +29,7 @@ python prepare_upload_signal.py --data_dir data_2013 --output_dir data_2013/eeg_
 ```
 
 ## Train Model
-You can modify args settings in seq2seq_sleep_sleep-EDF.py at your discretion. 
+You can modify args settings in `seq2seq_sleep_sleep-EDF.py` at your discretion. 
 * Use the below script to train a model with the 20-fold cross-validation using Fpz-Cz channel of the Sleep_EDF (2013) dataset:
 ```
 python seq2seq_sleep_sleep_EDF.py --data_dir data_2013/eeg_fpz_cz --output_dir output_2013 --n_folds 20
