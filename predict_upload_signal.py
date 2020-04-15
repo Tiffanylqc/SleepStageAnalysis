@@ -2,7 +2,6 @@ import dataloader
 from seq2seq_sleep_sleep_EDF import build_whole_model, evaluate_metrics
 import numpy as np
 import matplotlib.pyplot as plt
-import scipy.io as spio
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import confusion_matrix, f1_score
 import random

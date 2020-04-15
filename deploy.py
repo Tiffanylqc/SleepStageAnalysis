@@ -1,27 +1,13 @@
 from flask import Flask, request, Response, jsonify, make_response
-import glob
-import ntpath
 import os
 import shutil
 import pandas as pd
-from mne import Epochs, pick_types, find_events
-from mne.io import concatenate_raws, read_raw_edf
+from mne.io import read_raw_edf
 
 from seq2seq_sleep_sleep_EDF import build_whole_model
 import eeg_frag_info_combine
 import numpy as np
-import scipy.io as spio
-from sklearn.preprocessing import MinMaxScaler
-from sklearn.metrics import confusion_matrix, f1_score
-from sklearn.metrics import confusion_matrix
-from sklearn.metrics import cohen_kappa_score
 import tensorflow as tf
-from imblearn.over_sampling import SMOTE
-from imblearn.under_sampling import RandomUnderSampler
-from imblearn.over_sampling import ADASYN
-from sklearn.model_selection import train_test_split
-from tensorflow.python.layers.core import Dense
-from tensorflow.contrib.seq2seq.python.ops import beam_search_decoder
 from tensorflow.python.util import deprecation
 
 deprecation._PRINT_DEPRECATION_WARNINGS = False
