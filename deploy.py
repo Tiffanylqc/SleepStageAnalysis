@@ -39,7 +39,7 @@ ann2label = {
 
 EPOCH_SEC_SIZE = 30
 
-DATA_DIR = "./eeg_data/"
+DATA_DIR = "./eeg_data/upload/"
 SELECT_CH = "EEG Fpz-Cz"
 
 # hyperparameters

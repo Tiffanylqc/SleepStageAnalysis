@@ -1,3 +1,6 @@
+"""
+adapted from https://github.com/MousaviSajad/SleepEEGNet
+"""
 import numpy as np
 import scipy.io as spio
 from sklearn.preprocessing import MinMaxScaler
@@ -936,7 +939,6 @@ def main(args=None):
         "checkpoints-seq2seq-sleep-EDF",
         """Directory to save checkpoints""",
     )
-    # tf.app.flags.DEFINE_string('ckpt_name', 'seq2seq_sleep.ckpt',"""Check point name""")
 
     # hyperparameters
     hparams = tf.contrib.training.HParams(
