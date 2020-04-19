@@ -3,7 +3,7 @@ import os
 import shutil
 import pandas as pd
 from mne.io import read_raw_edf
-
+from flask_cors import CORS
 from seq2seq_sleep_sleep_EDF import build_whole_model
 import eeg_frag_info_combine
 import numpy as np
@@ -14,6 +14,7 @@ deprecation._PRINT_DEPRECATION_WARNINGS = False
 
 
 app = Flask(__name__)
+CORS(app)
 
 # Label values
 W = 0
