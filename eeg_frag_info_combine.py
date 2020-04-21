@@ -54,11 +54,11 @@ def eeg_frag_info(y_pred, epoch_len):
     
     # weighted transition rate (sleep fragmentation index)
     wtr = round (twt / tst, 2)  
-    if wtr < 5:
+    if wtr < 10:
         wtr_msg = ("The Sleep Fragmentation Index represents sleep fragmentation " +
                   "that could negatively affect the overall sleep quality. " +
                   "You have a low score so you've likely had a peaceful sleep. ")
-    elif wtr < 10:
+    elif wtr < 20:
         wtr_msg = ("The Sleep Fragmentation Index represents sleep fragmentation " +
                   "that could negatively affect the overall sleep quality. " +
                   "You have a moderately high score so you've likely experienced " +
@@ -160,7 +160,7 @@ def make_msg(deep_ratio, rem_ratio, tst):
                1: (". Seriously you need to get more sleep, it's important!!\n"),
                2: (". That's too much sleep... Get up and enjoy the sunshine!\n")}
 
-    if deep_ratio < 10:
+    if deep_ratio < 8:
         deep = 2
     else:
         deep = 0
