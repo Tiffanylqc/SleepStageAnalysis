@@ -8,7 +8,7 @@ pandas==0.24.2
 scikit-learn==0.20.4
 six==1.14.0
 sure==1.4.11
-tensorflow==1.13.1
+tensorflow==2.9.3
 Werkzeug==1.0.0
 gunicorn==19.10.0
 gevent==1.4.0
